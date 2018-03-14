@@ -2,7 +2,7 @@ import datetime
 
 import os
 import requests
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 
 app = Flask(__name__)
 
@@ -34,7 +34,7 @@ def fetch_report():
         down_dir = os.environ.get('WIKI_REPORT_DOWN', '~/Download/')
         with open("{}{}.xls".format(down_dir, date_string), "wb") as code:
             code.write(response.content)
-    return render_template('index.html')
+    return redirect(url_for('index'))
 
 
 if __name__ == '__main__':
