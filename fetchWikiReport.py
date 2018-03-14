@@ -1,4 +1,6 @@
 import datetime
+
+import os
 import requests
 from flask import Flask, render_template, request
 
@@ -29,7 +31,8 @@ def fetch_report():
         date_string = "{}-{:0>2d}-{:0>2d}".format(date.year, date.month, date.day)
         querystring = {"billDate": date_string, "tradeType": "PAY"}
         response = requests.request("GET", url, headers=headers, params=querystring)
-        with open("/Users/latipay/PycharmProjects/fetchWikiReport/down/{}.xls".format(date_string), "wb") as code:
+        down_dir = os.environ.get('WIKI_REPORT_DOWN', '~/Download/')
+        with open("{}{}.xls".format(down_dir, date_string), "wb") as code:
             code.write(response.content)
     return render_template('index.html')
 
