@@ -1,5 +1,4 @@
 import datetime
-
 import os
 import requests
 from flask import Flask, render_template, request, redirect, url_for
@@ -30,10 +29,13 @@ def fetch_report():
     for date in date_range(begin_time, end_time):
         date_string = "{}-{:0>2d}-{:0>2d}".format(date.year, date.month, date.day)
         querystring = {"billDate": date_string, "tradeType": "PAY"}
-        response = requests.request("GET", url, headers=headers, params=querystring)
-        down_dir = os.environ.get('WIKI_REPORT_DOWN', '~/Download/')
-        with open("{}{}.xls".format(down_dir, date_string), "wb") as code:
-            code.write(response.content)
+        try:
+            response = requests.request("GET", url, headers=headers, params=querystring)
+            down_dir = os.environ.get('WIKI_REPORT_DOWN', '~/Downloads/')
+            with open("{}{}.xls".format(down_dir, date_string), "wb") as code:
+                code.write(response.content)
+        except Exception as ex:
+            print(str(ex))
     return redirect(url_for('index'))
 
 
